@@ -38,8 +38,6 @@ void GameState::Update(const sf::Time &time)
 	}
 
 	mPlayerPaddle.SetPosition(sf::Vector2f(oldPlayerPos.x + mPlayerPaddle.GetSpeed() * time.asSeconds(), oldPlayerPos.y));
-	
-	sf::Vector2f newPlayerPos = mPlayerPaddle.GetPosition();
 	sf::Vector2f newBallPos = mBall.GetPosition();
 	float ballRadius = mBall.GetRadius();
 	sf::Vector2f newSpeed = mBall.GetSpeed();
@@ -49,6 +47,10 @@ void GameState::Update(const sf::Time &time)
 	{
 		//Set the new ball position, but don't move it until collisions are checked
 		newBallPos = oldBallPos + newSpeed * time.asSeconds();
+	}
+	else
+	{
+		mBall.SetPosition(sf::Vector2f(mPlayerPaddle.GetPosition().x, mPlayerPaddle.GetPosition().y - mPlayerPaddle.GetSize().y / 2 - ballRadius));
 	}
 
 	//Handle Wall Collisions
@@ -199,8 +201,7 @@ void GameState::Update(const sf::Time &time)
 
 	if (mBall.IsActive())
 	{
-		newBallPos = oldBallPos + newSpeed * time.asSeconds();
-		mBall.SetPosition(newBallPos);
+		mBall.SetPosition(oldBallPos + newSpeed * time.asSeconds());
 	}
 
 	mIsOver = true;

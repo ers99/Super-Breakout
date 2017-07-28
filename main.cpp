@@ -5,7 +5,7 @@ int main()
 {
 	//Start game loop
 	Game game;
-	const sf::Time dt = sf::seconds(1 / 60.0f);
+	const sf::Time dt = sf::seconds(1 / 144.0f);
 	sf::Clock mClock;
 	sf::Time sinceLastUpdate = sf::Time::Zero;
 

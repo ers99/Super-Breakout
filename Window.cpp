@@ -1,8 +1,8 @@
 #include "Window.h"
 
-Window::Window(): mWindow(sf::VideoMode(800,600), "Breakout")
+Window::Window(): mWindow(sf::VideoMode(800,600), "Breakout", sf::Style::Close)
 {
-	mWindow.setVerticalSyncEnabled(true);
+	mWindow.setVerticalSyncEnabled(false);
 }
 
 Window::~Window()
