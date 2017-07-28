@@ -3,12 +3,15 @@
 
 int main()
 {
+	//Start game loop
 	Game game;
 	const sf::Time dt = sf::seconds(1 / 60.0f);
 	sf::Clock mClock;
 	sf::Time sinceLastUpdate = sf::Time::Zero;
+
 	while(game.IsOpen())
 	{
+		//Update is fixed timestep
 		sinceLastUpdate += mClock.restart();
 		while (sinceLastUpdate >= dt)
 		{
@@ -16,7 +19,7 @@ int main()
 			game.Update(dt);
 			
 		}
-		
+		//Update is variable
 		game.Draw();
 		game.HandleInput();
 	}
