@@ -6,5 +6,6 @@ DONE: 2. Make collision detection not suck
 	c. React accordingly
 3. Create level editor
 4. Scoring
-5. Ball speed adjustments and paddle size
+DONE: 5. Ball speed adjustments and paddle size
 DONE: 6. See whats causing memory leak
+7. Add Sound

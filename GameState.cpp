@@ -20,6 +20,22 @@ void GameState::Update(const sf::Time &time)
 	sf::Vector2f oldSpeed = mBall.GetSpeed();
 
 	HandleKeyboardState();
+	if (mPlayerPaddle.IsMoving())
+	{
+		if (mPlayerPaddle.GetSize().x > 0)
+		{
+			mPlayerPaddle.SetSize(sf::Vector2f(mPlayerPaddle.GetSize().x - time.asSeconds() * 100, mPlayerPaddle.GetSize().y));
+		}
+		else
+		{
+			mPlayerPaddle.SetSize(sf::Vector2f(0, mPlayerPaddle.GetSize().y));
+		}
+
+	}
+	else if (mPlayerPaddle.GetSize().x < mPlayerPaddle.DEFAULTSIZE.x)
+	{
+		mPlayerPaddle.SetSize(sf::Vector2f(mPlayerPaddle.GetSize().x + time.asSeconds() * 100, mPlayerPaddle.GetSize().y));
+	}
 
 	mPlayerPaddle.SetPosition(sf::Vector2f(oldPlayerPos.x + mPlayerPaddle.GetSpeed() * time.asSeconds(), oldPlayerPos.y));
 	
@@ -36,18 +52,23 @@ void GameState::Update(const sf::Time &time)
 	}
 
 	//Handle Wall Collisions
+	bool bounced = false;
  	if (newBallPos.x + ballRadius > windowSize.x)
 	{
+		bounced = true;
 		newSpeed.x = -std::abs(newSpeed.x);
 	}
 	else if(newBallPos.x - mBall.GetRadius() < 0)
 	{
+		bounced = true;
 		newSpeed.x = std::abs(newSpeed.x);
 	}
 	else if(newBallPos.y - mBall.GetRadius() < 0)
 	{
+		bounced = true;
 		newSpeed.y = std::abs(newSpeed.y);
 	}
+
 
 	//Get the four sides of the ball to check collision direction
 	float pi = std::acos(-1);
@@ -66,6 +87,7 @@ void GameState::Update(const sf::Time &time)
 	auto ballBounds = mBall.GetBounds();
 	if (playerBounds.intersects(ballBounds))
 	{
+		bounced = true;
 		if(playerBounds.contains(ballDown))
 		{
 			newSpeed.y = -std::abs(newSpeed.y);
@@ -101,6 +123,7 @@ void GameState::Update(const sf::Time &time)
 
 				if(brickBounds.contains(ballLeft) || brickBounds.contains(ballRight) || brickBounds.contains(ballUp) || brickBounds.contains(ballDown))
 				{
+					bounced = true;
 					if (brickBounds.contains(ballLeft))
 					{
 						newSpeed.x = std::abs(newSpeed.x);
@@ -123,6 +146,7 @@ void GameState::Update(const sf::Time &time)
 				}
 				else if(brickBounds.contains(topLeft) || brickBounds.contains(topRight) || brickBounds.contains(bottomLeft) || brickBounds.contains(bottomRight))
 				{
+					bounced = true;
 					if (brickBounds.contains(topLeft))
 					{
 						newSpeed.x = std::abs(newSpeed.x);
@@ -148,6 +172,10 @@ void GameState::Update(const sf::Time &time)
 					break;
 				}
 		}
+	}
+	if(bounced)
+	{
+		Notify(EventType::Bounce);
 	}
 
 	//Handle losing condition
@@ -220,7 +248,12 @@ void GameState::Draw()
 
 void GameState::OnCreate()
 {
-	LoadLevel("levels/level");
+	if(!LoadLevel("levels/level"))
+	{
+		mGame->SetLevel(0);
+		mGame->PopState();
+		return;
+	}
 	sf::Vector2u winSize =  mGame->GetWindow()->GetSize();
 	mPlayerPaddle.SetPosition(sf::Vector2f(winSize.x / 2.0f, winSize.y - mPlayerPaddle.GetSize().y / 2.0f));
 	mPlayerPaddle.SetColor(sf::Color::Green);
@@ -256,6 +289,7 @@ void GameState::HandleInput(sf::Event &event)
 
 
 
+
 GameState::~GameState()
 {
 }
@@ -266,8 +300,6 @@ void GameState::HandleKeyboardState()
 	sf::Vector2f playerPos = mPlayerPaddle.GetPosition();
 	sf::Vector2f playerSize = mPlayerPaddle.GetSize();
 	sf::Vector2u windowSize = mGame->GetWindow()->GetSize();
-	
-	bool isMoving = false;
 
 	//Handle KeyboardState and move player within bounds
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
@@ -275,11 +307,12 @@ void GameState::HandleKeyboardState()
 		if (!(playerPos.x + playerSize.x / 2 < windowSize.x))
 		{
 			mPlayerPaddle.SetPosition(sf::Vector2f(windowSize.x - playerSize.x / 2.0f, playerPos.y));
+			mPlayerPaddle.SetMoving(false);
 			mPlayerPaddle.SetSpeed(0);
 		}
 		else
 		{
-			isMoving = true;
+			mPlayerPaddle.SetMoving(true);
 			mPlayerPaddle.SetSpeed(mPlayerPaddle.SPEED);
 		}
 	}
@@ -288,37 +321,24 @@ void GameState::HandleKeyboardState()
 		if (!(playerPos.x - playerSize.x / 2 > 0))
 		{
 			mPlayerPaddle.SetPosition(sf::Vector2f(playerSize.x / 2.0f, playerPos.y));
+			mPlayerPaddle.SetMoving(false);
 			mPlayerPaddle.SetSpeed(0);
 		}		
 		else
 		{
-			isMoving = true;
+			mPlayerPaddle.SetMoving(true);
 			mPlayerPaddle.SetSpeed(-mPlayerPaddle.SPEED);
 		}
 	}
 	else
 	{
+		mPlayerPaddle.SetMoving(false);
 		mPlayerPaddle.SetSpeed(0);
 	}
-	if (isMoving)
-	{
-		if(mPlayerPaddle.GetSize().x > 0)
-		{
-			mPlayerPaddle.SetSize(sf::Vector2f(mPlayerPaddle.GetSize().x - 1, mPlayerPaddle.GetSize().y));
-		}
-		else
-		{
-			mPlayerPaddle.SetSize(sf::Vector2f(0, mPlayerPaddle.GetSize().y));
-		}
-		
-	}
-	else if(mPlayerPaddle.GetSize().x < mPlayerPaddle.DEFAULTSIZE.x)
-	{
-		mPlayerPaddle.SetSize(sf::Vector2f(mPlayerPaddle.GetSize().x + 1, mPlayerPaddle.GetSize().y));
-	}
+	
 }
 
-void GameState::LoadLevel(const std::string &path)
+bool GameState::LoadLevel(const std::string &path)
 {
 		std::ifstream inLevel;
 		std::string filePath = path + std::to_string(mGame->GetCurrentLevel());
@@ -326,9 +346,7 @@ void GameState::LoadLevel(const std::string &path)
 		if (!inLevel.is_open())
 		{
 			std::cerr << "Level could not be opened" << std::endl;
-			mGame->SetLevel(0);
-			mGame->PopState();
-			return;
+			return false;
 		}
 		int currentBlock = 0;
 		while (!inLevel.eof())
@@ -344,4 +362,6 @@ void GameState::LoadLevel(const std::string &path)
 			brick->SetPosition(sf::Vector2f(std::stoi(x) * mBlockSize.x, std::stoi(y) * mBlockSize.y));
 			mLevel.push_back(std::move(brick));
 		}
+		inLevel.close();
+		return true;
 }

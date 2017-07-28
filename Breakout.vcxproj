@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AudioPlayer.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BaseState.cpp" />
     <ClCompile Include="Brick.cpp" />
@@ -152,6 +153,7 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuState.cpp" />
+    <ClCompile Include="Observer.cpp" />
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="PausedState.cpp" />
     <ClCompile Include="TestState.cpp" />
@@ -159,12 +161,14 @@
     <ClCompile Include="WinState.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioPlayer.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BaseState.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="MenuState.h" />
+    <ClInclude Include="Observer.h" />
     <ClInclude Include="Paddle.h" />
     <ClInclude Include="PausedState.h" />
     <ClInclude Include="TestState.h" />

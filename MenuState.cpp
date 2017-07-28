@@ -32,6 +32,7 @@ void MenuState::OnCreate()
 	sf::FloatRect textRect = mText.getLocalBounds();
 	mText.setOrigin(textRect.left + textRect.width / 2, textRect.top + textRect.height / 2);
 	mText.setPosition(400, 300);
+	Notify(EventType::Lose);
 }
 
 void MenuState::OnDestroy()

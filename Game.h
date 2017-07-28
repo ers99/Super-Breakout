@@ -9,6 +9,7 @@
 #include "TestState.h"
 #include "GameState.h"
 #include "WinState.h"
+#include "AudioPlayer.h"
 
 
 class BaseState;
@@ -20,11 +21,10 @@ public:
 
 	bool IsOpen() const;
 
-	void Update();
+	void Update(const sf::Time &timePerFrame);
 
 	void Draw();
 
-	void RestartClock();
 
 	Window *GetWindow();
 
@@ -39,18 +39,18 @@ public:
 	void SwitchState(std::unique_ptr<BaseState> state);
 
 	void SetLevel(const float &level);
+
+	const sf::Time GetElapsed();
+
+	void SetElapsed(sf::Time elapsed);
 	
 private:
 
 	Window mWindow;
-
+	AudioPlayer mAudioPlayer;
 
 	//Level Information
 	int mCurrentLevel;
-
-	//Keep Track of the elapsed delta time
-	sf::Clock mClock;
-	sf::Time mElapsed;
 
 	//State stack
 	std::stack<std::unique_ptr<BaseState>> mStates;

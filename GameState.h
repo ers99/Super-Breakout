@@ -25,12 +25,14 @@ public:
 
 	void HandleInput(sf::Event &) override;
 
+
+
 	~GameState();
 
 private:
 
 	void HandleKeyboardState();
-	void LoadLevel(const std::string& path);
+	bool LoadLevel(const std::string& path);
 
 	std::vector<std::shared_ptr<Brick>> mLevel;
 	sf::Vector2f mBlockSize, mBlockPadding;
@@ -40,7 +42,6 @@ private:
 	Ball mBall;
 
 	bool mIsOver;
-	
 
 };
 

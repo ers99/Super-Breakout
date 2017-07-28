@@ -60,6 +60,16 @@ void Paddle::SetColor(const sf::Color& color)
 	mShape.setFillColor(color);
 }
 
+void Paddle::SetMoving(bool isMoving)
+{
+	mIsMoving = isMoving;
+}
+
+bool Paddle::IsMoving() const
+{
+	return mIsMoving;
+}
+
 void Paddle::UpdateOrigin()
 {
 	mShape.setOrigin(GetSize().x / 2.0f, GetSize().y / 2.0f);

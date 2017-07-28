@@ -30,7 +30,9 @@ public:
 
 	void SetColor(const sf::Color &color);
 
-	
+	void SetMoving(bool isMoving);
+
+	bool IsMoving() const;
 	
 
 
@@ -41,6 +43,7 @@ private:
 	sf::RectangleShape mShape;
 	float mSpeed;
 	
+	bool mIsMoving;
 
 };
 

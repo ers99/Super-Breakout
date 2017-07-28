@@ -12,9 +12,9 @@ bool Game::IsOpen() const
 	return mIsOpen;
 }
 
-void Game::Update()
+void Game::Update(const sf::Time &timePerFrame)
 {
-	mStates.top()->Update(mElapsed);
+	mStates.top()->Update(timePerFrame);
 }
 
 void Game::Draw()
@@ -24,10 +24,6 @@ void Game::Draw()
 	mWindow.Display();
 }
 
-void Game::RestartClock()
-{
-	mElapsed = mClock.restart();
-}
 
 Window *Game::GetWindow()
 {
@@ -36,6 +32,7 @@ Window *Game::GetWindow()
 
 void Game::PushState(std::unique_ptr<BaseState> state)
 {
+	state->RegisterObserver(&mAudioPlayer);
 	mStates.push(std::move(state));
 	mStates.top()->OnCreate();
 }
@@ -64,6 +61,7 @@ const int &Game::GetCurrentLevel() const
 
 void Game::SwitchState(std::unique_ptr<BaseState> state)
 {
+	state->RegisterObserver(&mAudioPlayer);
 	PopState();
 	PushState(std::move(state));
 }
@@ -72,4 +70,5 @@ void Game::SetLevel(const float &level)
 {
 	mCurrentLevel = level;
 }
+
 
