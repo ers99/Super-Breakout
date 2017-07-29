@@ -2,7 +2,7 @@
 
 
 
-Ball::Ball(float speed, float radius): mMagnitude(speed)
+Ball::Ball(float radius)
 {
 	SetRadius(radius);
 	mShape.setOrigin(GetRadius(), GetRadius());
@@ -38,16 +38,6 @@ const float &Ball::GetRadius() const
 	return mShape.getRadius();
 }
 
-const sf::Vector2f& Ball::GetSpeed() const
-{
-	return mSpeed;
-}
-
-void Ball::SetSpeed(const sf::Vector2f &speed)
-{
-	mSpeed = speed;
-}
-
 void Ball::SetRadius(const float &radius)
 {
 	mShape.setRadius(radius);
@@ -56,24 +46,4 @@ void Ball::SetRadius(const float &radius)
 void Ball::SetColor(const sf::Color& color)
 {
 	mShape.setFillColor(color);
-}
-
-const float &Ball::GetMagnitude() const
-{
-	return mMagnitude;
-}
-
-void Ball::SetMagnitude(const float& magnitude)
-{
-	mMagnitude = magnitude;
-}
-
-void Ball::SetActive(const bool& active)
-{
-	mIsActive = active;
-}
-
-const bool& Ball::IsActive() const
-{
-	return mIsActive;
 }

@@ -6,7 +6,7 @@
 #include <functional>
 
 
-GameState::GameState(Game *game): BaseState(game), mIsOver(false), mBlockSize({100,50}), mBlockPadding({1,1}), mBall(400.f, 10)
+GameState::GameState(Game *game): BaseState(game), mIsOver(false), mBlockSize({100,50}), mBlockPadding({1,1}), mBall(10)
 {
 }
 
@@ -17,7 +17,6 @@ void GameState::Update(const sf::Time &time)
 	sf::Vector2f oldPlayerPos = mPlayerPaddle.GetPosition();
 	sf::Vector2u windowSize = mGame->GetWindow()->GetSize();
 	sf::Vector2f oldBallPos = mBall.GetPosition();
-	sf::Vector2f oldSpeed = mBall.GetSpeed();
 
 	HandleKeyboardState();
 	if (mPlayerPaddle.IsMoving())
@@ -40,13 +39,13 @@ void GameState::Update(const sf::Time &time)
 	mPlayerPaddle.SetPosition(sf::Vector2f(oldPlayerPos.x + mPlayerPaddle.GetSpeed() * time.asSeconds(), oldPlayerPos.y));
 	sf::Vector2f newBallPos = mBall.GetPosition();
 	float ballRadius = mBall.GetRadius();
-	sf::Vector2f newSpeed = mBall.GetSpeed();
+	sf::Vector2f newVelocity = mBall.GetVelocity();
 
 
 	if(mBall.IsActive())
 	{
 		//Set the new ball position, but don't move it until collisions are checked
-		newBallPos = oldBallPos + newSpeed * time.asSeconds();
+		newBallPos = oldBallPos + newVelocity * time.asSeconds();
 	}
 	else
 	{
@@ -58,19 +57,22 @@ void GameState::Update(const sf::Time &time)
  	if (newBallPos.x + ballRadius > windowSize.x)
 	{
 		bounced = true;
-		newSpeed.x = -std::abs(newSpeed.x);
+		newVelocity.x = -std::abs(newVelocity.x);
 	}
 	else if(newBallPos.x - mBall.GetRadius() < 0)
 	{
 		bounced = true;
-		newSpeed.x = std::abs(newSpeed.x);
+		newVelocity.x = std::abs(newVelocity.x);
 	}
 	else if(newBallPos.y - mBall.GetRadius() < 0)
 	{
 		bounced = true;
-		newSpeed.y = std::abs(newSpeed.y);
+		newVelocity.y = std::abs(newVelocity.y);
 	}
-
+	if(bounced)
+	{
+		Notify(EventType::Bounce, &mBall);
+	}
 
 	//Get the four sides of the ball to check collision direction
 	float pi = std::acos(-1);
@@ -89,22 +91,22 @@ void GameState::Update(const sf::Time &time)
 	auto ballBounds = mBall.GetBounds();
 	if (playerBounds.intersects(ballBounds))
 	{
-		bounced = true;
+		Notify(EventType::Bounce, &mBall);
 		if(playerBounds.contains(ballDown))
 		{
-			newSpeed.y = -std::abs(newSpeed.y);
+			newVelocity.y = -std::abs(newVelocity.y);
 
 			//Use distance between middle of ball and middle of paddle to determine ball direction
 			sf::Vector2f distance = mBall.GetPosition() - mPlayerPaddle.GetPosition();
-			newSpeed = distance;
+			newVelocity = distance;
 		}
 		if (playerBounds.contains(ballLeft))
 		{
-			newSpeed.x = std::abs(newSpeed.x);
+			newVelocity.x = std::abs(newVelocity.x);
 		}
 		if (playerBounds.contains(ballRight))
 		{
-			newSpeed.x = -std::abs(newSpeed.x);
+			newVelocity.x = -std::abs(newVelocity.x);
 		}
 		
 	}
@@ -125,22 +127,22 @@ void GameState::Update(const sf::Time &time)
 
 				if(brickBounds.contains(ballLeft) || brickBounds.contains(ballRight) || brickBounds.contains(ballUp) || brickBounds.contains(ballDown))
 				{
-					bounced = true;
+					Notify(EventType::Bounce, &mBall);
 					if (brickBounds.contains(ballLeft))
 					{
-						newSpeed.x = std::abs(newSpeed.x);
+						newVelocity.x = std::abs(newVelocity.x);
 					}
 					if (brickBounds.contains(ballRight))
 					{
-						newSpeed.x = -std::abs(newSpeed.x);
+						newVelocity.x = -std::abs(newVelocity.x);
 					}
 					if (brickBounds.contains(ballUp))
 					{
-						newSpeed.y = std::abs(newSpeed.y);
+						newVelocity.y = std::abs(newVelocity.y);
 					}
 					if (brickBounds.contains(ballDown))
 					{
-						newSpeed.y = -std::abs(newSpeed.y);
+						newVelocity.y = -std::abs(newVelocity.y);
 					}
 					(*itr)->SetActive(false);
 
@@ -148,36 +150,33 @@ void GameState::Update(const sf::Time &time)
 				}
 				else if(brickBounds.contains(topLeft) || brickBounds.contains(topRight) || brickBounds.contains(bottomLeft) || brickBounds.contains(bottomRight))
 				{
-					bounced = true;
+					Notify(EventType::Bounce, &mBall);
+
 					if (brickBounds.contains(topLeft))
 					{
-						newSpeed.x = std::abs(newSpeed.x);
-						newSpeed.y = std::abs(newSpeed.y);
+						newVelocity.x = std::abs(newVelocity.x);
+						newVelocity.y = std::abs(newVelocity.y);
 					}
 					if (brickBounds.contains(topRight))
 					{
-						newSpeed.x = -std::abs(newSpeed.x);
-						newSpeed.y = std::abs(newSpeed.y);
+						newVelocity.x = -std::abs(newVelocity.x);
+						newVelocity.y = std::abs(newVelocity.y);
 					}
 					if (brickBounds.contains(bottomLeft))
 					{
-						newSpeed.x = std::abs(newSpeed.x);
-						newSpeed.y = -std::abs(newSpeed.y);
+						newVelocity.x = std::abs(newVelocity.x);
+						newVelocity.y = -std::abs(newVelocity.y);
 					}
 					if (brickBounds.contains(bottomRight))
 					{
-						newSpeed.x = -std::abs(newSpeed.x);
-						newSpeed.y = -std::abs(newSpeed.y);
+						newVelocity.x = -std::abs(newVelocity.x);
+						newVelocity.y = -std::abs(newVelocity.y);
 					}
 					(*itr)->SetActive(false);
 
 					break;
 				}
 		}
-	}
-	if(bounced)
-	{
-		Notify(EventType::Bounce);
 	}
 
 	//Handle losing condition
@@ -188,20 +187,21 @@ void GameState::Update(const sf::Time &time)
 			itr->SetActive(true);
 		}
 		mGame->PopState();
+		return;
 	}
 
 	//Get unit vector and then multiply by magnitude
-	float magnitude = std::sqrt(std::pow(newSpeed.x, 2) + std::pow(newSpeed.y, 2));
-	newSpeed.x /= magnitude;
-	newSpeed.y /= magnitude;
-	newSpeed = newSpeed * mBall.GetMagnitude();
+	float magnitude = std::sqrt(std::pow(newVelocity.x, 2) + std::pow(newVelocity.y, 2));
+	newVelocity.x /= magnitude;
+	newVelocity.y /= magnitude;
+	newVelocity = newVelocity * mBall.GetMagnitude();
 
 	//Finally update the balls position if active
-	mBall.SetSpeed(newSpeed);
+	mBall.SetVelocity(newVelocity);
 
 	if (mBall.IsActive())
 	{
-		mBall.SetPosition(oldBallPos + newSpeed * time.asSeconds());
+		mBall.SetPosition(oldBallPos + newVelocity * time.asSeconds());
 	}
 
 	mIsOver = true;
@@ -260,7 +260,8 @@ void GameState::OnCreate()
 	mPlayerPaddle.SetColor(sf::Color::Green);
 	mBall.SetPosition(sf::Vector2f(winSize.x / 2.0f, winSize.y - mPlayerPaddle.GetSize().y - mBall.GetRadius()));
 	mBall.SetActive(false);
-	mBall.SetSpeed(sf::Vector2f(mBall.GetMagnitude(), -mBall.GetMagnitude()));
+	mBall.SetMagnitude(400);
+	mBall.SetVelocity(sf::Vector2f(mBall.GetMagnitude(), -mBall.GetMagnitude()));
 }
 
 void GameState::OnDestroy()
@@ -357,7 +358,7 @@ bool GameState::LoadLevel(const std::string &path)
 			std::stringstream linestream(currentLine);
 			std::string red, green, blue, alpha, x, y;
 			linestream >> red >> green >> blue >> alpha >> x >> y;
-			std::shared_ptr<Brick> brick = std::make_shared<Brick>();
+			std::unique_ptr<Brick> brick = std::make_unique<Brick>();
 			brick->SetSize(mBlockSize - mBlockPadding);
 			brick->SetColor(sf::Color(std::stoi(red), std::stoi(green), std::stoi(blue)));
 			brick->SetPosition(sf::Vector2f(std::stoi(x) * mBlockSize.x, std::stoi(y) * mBlockSize.y));

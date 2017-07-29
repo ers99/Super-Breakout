@@ -1,4 +1,6 @@
 #pragma once
+#include <SFML/Graphics/Drawable.hpp>
+#include "Entity.h"
 enum class EventType
 {
 	Win,
@@ -13,6 +15,6 @@ public:
 	Observer();
 	virtual ~Observer();
 
-	virtual void OnNotify(const EventType &eventType);
+	virtual void OnNotify(const EventType &eventType, Entity *entity);
 };
 

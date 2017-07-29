@@ -1,49 +1,31 @@
 #pragma once
 #include <SFML/Graphics/CircleShape.hpp>
 #include "Window.h"
+#include "Entity.h"
 
-class Ball
+class Ball : public Entity
 {
 public:
-	Ball(float speed, float radius);
+	Ball(float radius);
 	~Ball();
 
-	
-
-	void SetPosition(const sf::Vector2f &);
+	void SetPosition(const sf::Vector2f &) override;
 
 
-	void Draw(Window *window) const;
+	void Draw(Window *window) const override;
 
-	const sf::FloatRect &GetBounds() const;
+	const sf::FloatRect &GetBounds() const override;
 
-	const sf::Vector2f &GetPosition() const;
+	const sf::Vector2f &GetPosition() const override;
 
-	const float &GetRadius() const;
-
-	const sf::Vector2f &GetSpeed() const;
-
-	void SetSpeed(const sf::Vector2f &speed);
-
-	void SetRadius(const float &radius);
-
-	void SetColor(const sf::Color &color);
-
-	const float &GetMagnitude() const;
-
-	void SetMagnitude(const float &magnitude);
+	void SetColor(const sf::Color &color) override;
 
 	//Behavior methods
 
-	void SetActive(const bool &active);
-
-	const bool &IsActive() const;
+	const float &GetRadius() const;
+	void SetRadius(const float &radius);
 
 private:
-
-	float mMagnitude;
 	sf::CircleShape mShape;
-	sf::Vector2f mSpeed;
-	bool mIsActive;
 };
 

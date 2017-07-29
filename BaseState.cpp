@@ -13,10 +13,10 @@ void BaseState::RegisterObserver(Observer* observer)
 	mObservers.push_back(observer);
 }
 
-void BaseState::Notify(EventType event)
+void BaseState::Notify(EventType event, Entity *entity)
 {
 	for (Observer* observer : mObservers)
 	{
-		observer->OnNotify(event);
+		observer->OnNotify(event, entity);
 	}
 }

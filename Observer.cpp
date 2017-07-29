@@ -11,6 +11,6 @@ Observer::~Observer()
 {
 }
 
-void Observer::OnNotify(const EventType& eventType)
+void Observer::OnNotify(const EventType& eventType, Entity *entity)
 {
 }

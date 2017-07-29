@@ -24,10 +24,11 @@ void AudioPlayer::PlaySound(const EventType& soundEffect)
 	}
 }
 
-void AudioPlayer::OnNotify(const EventType& eventType)
+void AudioPlayer::OnNotify(const EventType& eventType, Entity *entity)
 {
 	PlaySound(eventType);
 }
+
 
 void AudioPlayer::LoadSound(const EventType& soundEffect, const std::string& path)
 {

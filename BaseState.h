@@ -25,7 +25,7 @@ public:
 
 protected:
 	Game *mGame;
-	void Notify(EventType event);
+	void Notify(EventType event, Entity *entity);
 	std::vector<Observer*> mObservers;
 
 private:

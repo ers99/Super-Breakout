@@ -15,7 +15,7 @@ public:
 
 	void PlaySound(const EventType &soundEffect);
 
-	void OnNotify(const EventType &eventType) override;
+	void OnNotify(const EventType &eventType, Entity *entity) override;
 
 private:
 	void LoadSound(const EventType& soundEffect, const std::string& path);

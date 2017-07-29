@@ -1,29 +1,32 @@
 #pragma once
 #include "Window.h"
+#include "Entity.h"
 
-class Brick
+class Brick : public Entity
 {
 public:
 	Brick();
 	~Brick();
 
-	void SetColor(const sf::Color &color);
+	void SetColor(const sf::Color &color) override;
 
-	void SetPosition(const sf::Vector2f &position);
+	void SetPosition(const sf::Vector2f &position) override;
 
 	void SetSize(const sf::Vector2f &size);
 
-	void Draw(Window *window) const;
+	void Draw(Window *window) const override;
 
-	const sf::FloatRect &GetBounds() const;
+	const sf::FloatRect &GetBounds() const override;
 	
-	const sf::Vector2f &GetPosition() const;
+	const sf::Vector2f &GetPosition() const override;
 
 	void SetActive(const bool&);
 
 	const bool &IsActive() const;
 
 private:
+
+	sf::Vector2f mVelocity;
 
 	sf::RectangleShape mShape;
 	bool mIsActive;

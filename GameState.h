@@ -34,7 +34,7 @@ private:
 	void HandleKeyboardState();
 	bool LoadLevel(const std::string& path);
 
-	std::vector<std::shared_ptr<Brick>> mLevel;
+	std::vector<std::unique_ptr<Brick>> mLevel;
 	sf::Vector2f mBlockSize, mBlockPadding;
 
 	Paddle mPlayerPaddle;
