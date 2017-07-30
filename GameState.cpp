@@ -6,7 +6,9 @@
 #include <functional>
 
 
-GameState::GameState(Game *game): BaseState(game), mIsOver(false), mBlockSize({100,50}), mBlockPadding({1,1}), mBall(10)
+GameState::GameState(Game *game) : BaseState(game), 
+mIsOver(false), mBlockSize({ mGame->GetWindow()->GetSize().x / 10.0f, mGame->GetWindow()->GetSize().y / 10.0f }),
+mBlockPadding({ 1,1 }), mBall(mGame->GetWindow()->GetSize().x / 100.0f), mPlayerPaddle({ mGame->GetWindow()->GetSize().x / 5.0f, mGame->GetWindow()->GetSize().y / 10.0f })
 {
 }
 
@@ -15,15 +17,15 @@ void GameState::Update(const sf::Time &time)
 	
 	//Define variables needed for movement
 	sf::Vector2f oldPlayerPos = mPlayerPaddle.GetPosition();
-	sf::Vector2u windowSize = mGame->GetWindow()->GetSize();
+	const sf::Vector2u windowSize = mGame->GetWindow()->GetSize();
 	sf::Vector2f oldBallPos = mBall.GetPosition();
 
-	HandleKeyboardState();
+	float playerMagnitude = HandleKeyboardState();
 	if (mPlayerPaddle.IsMoving())
 	{
 		if (mPlayerPaddle.GetSize().x > 0)
 		{
-			mPlayerPaddle.SetSize(sf::Vector2f(mPlayerPaddle.GetSize().x - time.asSeconds() * 100, mPlayerPaddle.GetSize().y));
+			mPlayerPaddle.SetSize(sf::Vector2f(mPlayerPaddle.GetSize().x - time.asSeconds() * windowSize.x / 10, mPlayerPaddle.GetSize().y));
 		}
 		else
 		{
@@ -31,12 +33,12 @@ void GameState::Update(const sf::Time &time)
 		}
 
 	}
-	else if (mPlayerPaddle.GetSize().x < mPlayerPaddle.DEFAULTSIZE.x)
+	else if (mPlayerPaddle.GetSize().x < mPlayerPaddle.defaultSize.x)
 	{
-		mPlayerPaddle.SetSize(sf::Vector2f(mPlayerPaddle.GetSize().x + time.asSeconds() * 100, mPlayerPaddle.GetSize().y));
+		mPlayerPaddle.SetSize(sf::Vector2f(mPlayerPaddle.GetSize().x + time.asSeconds() * windowSize.x / 10, mPlayerPaddle.GetSize().y));
 	}
 
-	mPlayerPaddle.SetPosition(sf::Vector2f(oldPlayerPos.x + mPlayerPaddle.GetSpeed() * time.asSeconds(), oldPlayerPos.y));
+	mPlayerPaddle.SetPosition(sf::Vector2f(oldPlayerPos.x + playerMagnitude * time.asSeconds() * windowSize.x, oldPlayerPos.y));
 	sf::Vector2f newBallPos = mBall.GetPosition();
 	float ballRadius = mBall.GetRadius();
 	sf::Vector2f newVelocity = mBall.GetVelocity();
@@ -94,10 +96,9 @@ void GameState::Update(const sf::Time &time)
 		Notify(EventType::Bounce, &mBall);
 		if(playerBounds.contains(ballDown))
 		{
-			newVelocity.y = -std::abs(newVelocity.y);
-
 			//Use distance between middle of ball and middle of paddle to determine ball direction
 			sf::Vector2f distance = mBall.GetPosition() - mPlayerPaddle.GetPosition();
+			std::cout << "Distance: " << distance.x << " : " << distance.y << std::endl;
 			newVelocity = distance;
 		}
 		if (playerBounds.contains(ballLeft))
@@ -127,7 +128,7 @@ void GameState::Update(const sf::Time &time)
 
 				if(brickBounds.contains(ballLeft) || brickBounds.contains(ballRight) || brickBounds.contains(ballUp) || brickBounds.contains(ballDown))
 				{
-					Notify(EventType::Bounce, &mBall);
+					Notify(EventType::BrickBreak, &**itr);
 					if (brickBounds.contains(ballLeft))
 					{
 						newVelocity.x = std::abs(newVelocity.x);
@@ -150,7 +151,7 @@ void GameState::Update(const sf::Time &time)
 				}
 				else if(brickBounds.contains(topLeft) || brickBounds.contains(topRight) || brickBounds.contains(bottomLeft) || brickBounds.contains(bottomRight))
 				{
-					Notify(EventType::Bounce, &mBall);
+					Notify(EventType::BrickBreak, &**itr);
 
 					if (brickBounds.contains(topLeft))
 					{
@@ -182,6 +183,7 @@ void GameState::Update(const sf::Time &time)
 	//Handle losing condition
 	if (newBallPos.y - mBall.GetRadius() > windowSize.y)
 	{
+		Notify(EventType::Lose, nullptr);
 		for(auto &itr : mLevel)
 		{
 			itr->SetActive(true);
@@ -194,14 +196,17 @@ void GameState::Update(const sf::Time &time)
 	float magnitude = std::sqrt(std::pow(newVelocity.x, 2) + std::pow(newVelocity.y, 2));
 	newVelocity.x /= magnitude;
 	newVelocity.y /= magnitude;
-	newVelocity = newVelocity * mBall.GetMagnitude();
-
+	newVelocity *= mBall.GetMagnitude();
+	std::cout << newVelocity.x << " : " << newVelocity.y << std::endl;
+	//newVelocity.x *= windowSize.x / 500.0f;
+	//newVelocity.y *= windowSize.y / 500.0f;
+	//std::cout << newVelocity.x << " : " << newVelocity.y << std::endl;
 	//Finally update the balls position if active
 	mBall.SetVelocity(newVelocity);
 
 	if (mBall.IsActive())
 	{
-		mBall.SetPosition(oldBallPos + newVelocity * time.asSeconds());
+		mBall.SetPosition(sf::Vector2f(oldBallPos.x + mBall.GetVelocity().x * time.asSeconds() * windowSize.x, oldBallPos.y + mBall.GetVelocity().y * time.asSeconds() * windowSize.y));
 	}
 
 	mIsOver = true;
@@ -223,8 +228,10 @@ void GameState::Update(const sf::Time &time)
 	}
 	if (mIsOver && mBall.IsActive())
 	{
+		Notify(EventType::Win, nullptr);
 		mGame->SetLevel(mGame->GetCurrentLevel() + 1);
 		mGame->SwitchState(std::make_unique<WinState>(mGame));
+		
 	}
 }
 
@@ -258,10 +265,11 @@ void GameState::OnCreate()
 	sf::Vector2u winSize =  mGame->GetWindow()->GetSize();
 	mPlayerPaddle.SetPosition(sf::Vector2f(winSize.x / 2.0f, winSize.y - mPlayerPaddle.GetSize().y / 2.0f));
 	mPlayerPaddle.SetColor(sf::Color::Green);
+	mPlayerPaddle.SetMagnitude(1);
 	mBall.SetPosition(sf::Vector2f(winSize.x / 2.0f, winSize.y - mPlayerPaddle.GetSize().y - mBall.GetRadius()));
 	mBall.SetActive(false);
-	mBall.SetMagnitude(400);
-	mBall.SetVelocity(sf::Vector2f(mBall.GetMagnitude(), -mBall.GetMagnitude()));
+	mBall.SetMagnitude(1);
+	mBall.SetVelocity(sf::Vector2f(0, -mBall.GetMagnitude() * winSize.y));
 }
 
 void GameState::OnDestroy()
@@ -296,7 +304,7 @@ GameState::~GameState()
 {
 }
 
-void GameState::HandleKeyboardState()
+float GameState::HandleKeyboardState()
 {
 	//Define variables needed for movement
 	sf::Vector2f playerPos = mPlayerPaddle.GetPosition();
@@ -310,12 +318,12 @@ void GameState::HandleKeyboardState()
 		{
 			mPlayerPaddle.SetPosition(sf::Vector2f(windowSize.x - playerSize.x / 2.0f, playerPos.y));
 			mPlayerPaddle.SetMoving(false);
-			mPlayerPaddle.SetSpeed(0);
+			return 0;
 		}
 		else
 		{
 			mPlayerPaddle.SetMoving(true);
-			mPlayerPaddle.SetSpeed(mPlayerPaddle.SPEED);
+			return mPlayerPaddle.GetMagnitude();
 		}
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -324,18 +332,18 @@ void GameState::HandleKeyboardState()
 		{
 			mPlayerPaddle.SetPosition(sf::Vector2f(playerSize.x / 2.0f, playerPos.y));
 			mPlayerPaddle.SetMoving(false);
-			mPlayerPaddle.SetSpeed(0);
+			return 0;
 		}		
 		else
 		{
 			mPlayerPaddle.SetMoving(true);
-			mPlayerPaddle.SetSpeed(-mPlayerPaddle.SPEED);
+			return -mPlayerPaddle.GetMagnitude();
 		}
 	}
 	else
 	{
 		mPlayerPaddle.SetMoving(false);
-		mPlayerPaddle.SetSpeed(0);
+		return 0;
 	}
 	
 }
@@ -359,6 +367,7 @@ bool GameState::LoadLevel(const std::string &path)
 			std::string red, green, blue, alpha, x, y;
 			linestream >> red >> green >> blue >> alpha >> x >> y;
 			std::unique_ptr<Brick> brick = std::make_unique<Brick>();
+			sf::Vector2f blockSize = { mBlockSize.x * mGame->GetWindow()->GetSize().x, mBlockSize.y * mGame->GetWindow()->GetSize().y };
 			brick->SetSize(mBlockSize - mBlockPadding);
 			brick->SetColor(sf::Color(std::stoi(red), std::stoi(green), std::stoi(blue)));
 			brick->SetPosition(sf::Vector2f(std::stoi(x) * mBlockSize.x, std::stoi(y) * mBlockSize.y));

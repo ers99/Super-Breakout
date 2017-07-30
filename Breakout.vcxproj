@@ -162,6 +162,7 @@
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="PausedState.cpp" />
     <ClCompile Include="TestState.cpp" />
+    <ClCompile Include="TextSpawner.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WinState.cpp" />
   </ItemGroup>
@@ -178,6 +179,7 @@
     <ClInclude Include="Paddle.h" />
     <ClInclude Include="PausedState.h" />
     <ClInclude Include="TestState.h" />
+    <ClInclude Include="TextSpawner.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WinState.h" />
   </ItemGroup>

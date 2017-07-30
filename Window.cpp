@@ -1,7 +1,12 @@
 #include "Window.h"
+#include <iostream>
 
-Window::Window(): mWindow(sf::VideoMode(800,600), "Breakout", sf::Style::Close)
+Window::Window()
 {
+	sf::Vector2u windowSize;
+	std::cout << "Enter resolution: (eg. 1920 1080)" << std::endl;
+	std::cin >> windowSize.x >> windowSize.y;
+	mWindow.create(sf::VideoMode(windowSize.x, windowSize.y), "Breakout", sf::Style::Fullscreen);
 	mWindow.setVerticalSyncEnabled(false);
 }
 
@@ -16,7 +21,7 @@ const sf::RenderWindow* Window::GetRenderWindow() const
 
 void Window::Clear()
 {
-	mWindow.clear();
+	mWindow.clear(sf::Color::Black);
 }
 
 void Window::Draw(const sf::Drawable &drawable)
@@ -34,7 +39,13 @@ const sf::Vector2u& Window::GetSize() const
 	return mWindow.getSize();
 }
 
+void Window::SetView(const sf::View& view)
+{
+	mWindow.setView(view);
+}
+
 void Window::PollEvent(sf::Event& e)
 {
 	mWindow.pollEvent(e);
 }
+

@@ -1,49 +1,37 @@
 #pragma once
 #include <SFML/Graphics/RectangleShape.hpp>
 #include "Window.h"
+#include "Entity.h"
 
-class Paddle
+class Paddle: public Entity
 {
 public:
-	Paddle();
+	Paddle(const sf::Vector2f &size);
 	~Paddle();
 
-	const float SPEED = 600;
-	const sf::Vector2f DEFAULTSIZE = { 200,50 };
+	sf::Vector2f defaultSize;
+	const float DEFAULTMAGNITUDE = 400;
 
-	void SetPosition(const sf::Vector2f &);
+	void SetPosition(const sf::Vector2f &) override;
 	
 
-	void Draw(Window *window) const;
+	void Draw(Window *window) const override;
 
-	const sf::FloatRect &GetBounds() const;
+	const sf::FloatRect &GetBounds() const override;
 
-	const sf::Vector2f &GetPosition() const;
+	const sf::Vector2f &GetPosition() const override;
 
 	const sf::Vector2f &GetSize() const;
 
-	const float &GetSpeed() const;
-
-	void SetSpeed(const float &speed);
-
 	void SetSize(const sf::Vector2f &size);
 
-	void SetColor(const sf::Color &color);
-
-	void SetMoving(bool isMoving);
-
-	bool IsMoving() const;
-	
-
+	void SetColor(const sf::Color &color) override;
 
 private:
 
-	void UpdateOrigin();
+	void UpdateOrigin() override;
 
 	sf::RectangleShape mShape;
-	float mSpeed;
-	
-	bool mIsMoving;
 
 };
 

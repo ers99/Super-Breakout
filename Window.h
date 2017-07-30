@@ -15,8 +15,12 @@ public:
 
 	const sf::Vector2u &GetSize() const;
 
+	void SetView(const sf::View &view);
+
 	void PollEvent(sf::Event &e);
+
 
 private:
 	sf::RenderWindow mWindow;
+	sf::View mView;
 };

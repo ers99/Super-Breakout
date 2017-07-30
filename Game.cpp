@@ -15,12 +15,14 @@ bool Game::IsOpen() const
 void Game::Update(const sf::Time &timePerFrame)
 {
 	mStates.top()->Update(timePerFrame);
+	mTextSpawner.Update(timePerFrame);
 }
 
 void Game::Draw()
 {
 	mWindow.Clear();
 	mStates.top()->Draw();
+	mTextSpawner.Draw(&mWindow);
 	mWindow.Display();
 }
 
@@ -33,6 +35,7 @@ Window *Game::GetWindow()
 void Game::PushState(std::unique_ptr<BaseState> state)
 {
 	state->RegisterObserver(&mAudioPlayer);
+	state->RegisterObserver(&mTextSpawner);
 	mStates.push(std::move(state));
 	mStates.top()->OnCreate();
 }

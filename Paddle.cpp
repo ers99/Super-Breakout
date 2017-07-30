@@ -2,10 +2,10 @@
 
 
 
-Paddle::Paddle(): mSpeed(SPEED)
+Paddle::Paddle(const sf::Vector2f &size)
 {
-	SetSize(DEFAULTSIZE);
-
+	SetSize(size);
+	defaultSize = size;
 }
 
 
@@ -39,16 +39,6 @@ const sf::Vector2f& Paddle::GetSize() const
 	return mShape.getSize();
 }
 
-const float& Paddle::GetSpeed() const
-{
-	return mSpeed;
-}
-
-void Paddle::SetSpeed(const float& speed)
-{
-	mSpeed = speed;
-}
-
 void Paddle::SetSize(const sf::Vector2f& size)
 {
 	mShape.setSize(size);
@@ -58,16 +48,6 @@ void Paddle::SetSize(const sf::Vector2f& size)
 void Paddle::SetColor(const sf::Color& color)
 {
 	mShape.setFillColor(color);
-}
-
-void Paddle::SetMoving(bool isMoving)
-{
-	mIsMoving = isMoving;
-}
-
-bool Paddle::IsMoving() const
-{
-	return mIsMoving;
 }
 
 void Paddle::UpdateOrigin()

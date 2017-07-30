@@ -3,6 +3,7 @@
 #include "Entity.h"
 enum class EventType
 {
+	Start,
 	Win,
 	Lose,
 	Bounce,

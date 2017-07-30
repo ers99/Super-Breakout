@@ -24,15 +24,17 @@ void MenuState::Draw()
 
 void MenuState::OnCreate()
 {
+	sf::Vector2u size = mGame->GetWindow()->GetSize();
 	mFont.loadFromFile("arial.ttf");
 	mText.setFont(mFont);
 	mText.setString("Breakout");
-	mText.setCharacterSize(30);
+	mText.setCharacterSize(size.x / 10);
 	
 	sf::FloatRect textRect = mText.getLocalBounds();
 	mText.setOrigin(textRect.left + textRect.width / 2, textRect.top + textRect.height / 2);
-	mText.setPosition(400, 300);
-	Notify(EventType::Win, nullptr);
+	
+	mText.setPosition(size.x / 2, size.y / 2);
+	Notify(EventType::Start, nullptr);
 }
 
 void MenuState::OnDestroy()

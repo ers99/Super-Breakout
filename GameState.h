@@ -9,8 +9,7 @@
 #include "Game.h"
 
 
-class GameState :
-	public BaseState
+class GameState : public BaseState
 {
 public:
 	explicit GameState(Game *game);
@@ -31,7 +30,7 @@ public:
 
 private:
 
-	void HandleKeyboardState();
+	float HandleKeyboardState();
 	bool LoadLevel(const std::string& path);
 
 	std::vector<std::unique_ptr<Brick>> mLevel;

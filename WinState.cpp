@@ -24,14 +24,15 @@ void WinState::Draw()
 
 void WinState::OnCreate()
 {
+	sf::Vector2u size = mGame->GetWindow()->GetSize();
 	mFont.loadFromFile("arial.ttf");
 	mText.setFont(mFont);
-	mText.setString("You Win!\nPress enter for next level");
-	mText.setCharacterSize(30);
+	mText.setString("    You Win!\n  Press enter \n for next level");
+	mText.setCharacterSize(size.x/10);
 
 	sf::FloatRect textRect = mText.getLocalBounds();
 	mText.setOrigin(textRect.left + textRect.width / 2, textRect.top + textRect.height / 2);
-	mText.setPosition(400, 300);
+	mText.setPosition(size.x/2, size.y/2);
 }
 
 void WinState::OnDestroy()

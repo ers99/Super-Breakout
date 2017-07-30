@@ -10,6 +10,7 @@
 #include "GameState.h"
 #include "WinState.h"
 #include "AudioPlayer.h"
+#include "TextSpawner.h"
 
 
 class BaseState;
@@ -48,6 +49,7 @@ private:
 
 	Window mWindow;
 	AudioPlayer mAudioPlayer;
+	TextSpawner mTextSpawner;
 
 	//Level Information
 	int mCurrentLevel;

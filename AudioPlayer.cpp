@@ -4,7 +4,10 @@
 AudioPlayer::AudioPlayer()
 {
 	LoadSound(EventType::Bounce, "Sounds/Bounce.wav");
-	LoadSound(EventType::Win, "Sounds/laugh.wav");
+	LoadSound(EventType::Start, "Sounds/laugh.wav");
+	LoadSound(EventType::Win, "Sounds/fanfare.wav");
+	LoadSound(EventType::Lose, "Sounds/lose.wav");
+	LoadSound(EventType::BrickBreak, "Sounds/break.wav");
 }
 
 AudioPlayer::~AudioPlayer()
