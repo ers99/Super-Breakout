@@ -146,6 +146,11 @@ void GameState::Update(const sf::Time &time)
 					}
 					(*itr)->SetActive(false);
 
+					int score;
+					std::istringstream buffer(mText.getString());
+					buffer >> score;
+					mText.setString(std::to_string(score + 100));
+
 					break;
 				}
 				else if(brickBounds.contains(topLeft) || brickBounds.contains(topRight) || brickBounds.contains(bottomLeft) || brickBounds.contains(bottomRight))
@@ -174,6 +179,12 @@ void GameState::Update(const sf::Time &time)
 					}
 					(*itr)->SetActive(false);
 
+					int score;
+					std::istringstream buffer(mText.getString());
+					buffer >> score;
+					mText.setString(std::to_string(score + 100));
+
+					break;
 					break;
 				}
 		}
@@ -247,6 +258,7 @@ void GameState::Draw()
 	}
 	mPlayerPaddle.Draw(mGame->GetWindow());
 	mBall.Draw(mGame->GetWindow());
+	mGame->GetWindow()->Draw(mText);
 }
 
 void GameState::OnCreate()
@@ -265,6 +277,13 @@ void GameState::OnCreate()
 	mBall.SetActive(false);
 	mBall.SetMagnitude(1);
 	mBall.SetVelocity(sf::Vector2f(0, -mBall.GetMagnitude() * winSize.y));
+	mFont.loadFromFile("arial.ttf");
+	mText.setFont(mFont);	
+	mText.setString("000");
+	sf::FloatRect textRect = mText.getLocalBounds();
+	mText.setOrigin(textRect.left + textRect.width / 2, textRect.top + textRect.height / 2);
+	mText.setCharacterSize(winSize.x / 20.0f);
+	mText.setPosition(winSize.x / 2, textRect.height);
 }
 
 void GameState::OnDestroy()

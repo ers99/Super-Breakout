@@ -39,6 +39,9 @@ private:
 	Paddle mPlayerPaddle;
 
 	Ball mBall;
+	sf::Font mFont;
+	sf::Text mText;
+
 
 	bool mIsOver;
 

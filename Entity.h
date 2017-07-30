@@ -32,9 +32,6 @@ public:
 
 	void SetActive(bool active);
 
-
-
-
 	Entity();
 	virtual ~Entity();
 
@@ -46,7 +43,5 @@ protected:
 
 	bool mIsActive;
 	bool mIsMoving;
-
-
 };
 

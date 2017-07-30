@@ -19,7 +19,7 @@ void AudioPlayer::PlaySound(const EventType& soundEffect)
 	auto itr = mSoundMap.find(soundEffect);
 	if(itr != mSoundMap.end())
 	{
-		(itr->second)->play();
+		itr->second->play();
 	}
 	else
 	{
@@ -29,7 +29,15 @@ void AudioPlayer::PlaySound(const EventType& soundEffect)
 
 void AudioPlayer::OnNotify(const EventType& eventType, Entity *entity)
 {
-	PlaySound(eventType);
+	if(entity != nullptr)
+	{
+		PlaySound(eventType);
+	}
+	else
+	{
+		PlaySound(eventType);
+	}
+	
 }
 
 
