@@ -277,12 +277,12 @@ void GameState::OnCreate()
 	mBall.SetActive(false);
 	mBall.SetMagnitude(1);
 	mBall.SetVelocity(sf::Vector2f(0, -mBall.GetMagnitude() * winSize.y));
-	mFont.loadFromFile("arial.ttf");
-	mText.setFont(mFont);	
+	mFont.loadFromFile("Fonts/mouse.otf");
+	mText.setFont(mFont);
+	mText.setCharacterSize(winSize.x / 20.0f);
 	mText.setString("000");
 	sf::FloatRect textRect = mText.getLocalBounds();
 	mText.setOrigin(textRect.left + textRect.width / 2, textRect.top + textRect.height / 2);
-	mText.setCharacterSize(winSize.x / 20.0f);
 	mText.setPosition(winSize.x / 2, textRect.height);
 }
 

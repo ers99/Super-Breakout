@@ -25,7 +25,7 @@ void PausedState::Draw()
 void PausedState::OnCreate()
 {
 	sf::Vector2u size = mGame->GetWindow()->GetSize();
-	mFont.loadFromFile("arial.ttf");
+	mFont.loadFromFile("Fonts/mouse.otf");
 	mText.setFont(mFont);
 	mText.setString("Paused");
 	mText.setCharacterSize(size.x / 10);

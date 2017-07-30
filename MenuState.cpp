@@ -25,7 +25,7 @@ void MenuState::Draw()
 void MenuState::OnCreate()
 {
 	sf::Vector2u size = mGame->GetWindow()->GetSize();
-	mFont.loadFromFile("arial.ttf");
+	mFont.loadFromFile("Fonts/mouse.otf");
 	mText.setFont(mFont);
 	mText.setString("Breakout");
 	mText.setCharacterSize(size.x / 10);

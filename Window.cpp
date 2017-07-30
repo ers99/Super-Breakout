@@ -6,7 +6,7 @@ Window::Window()
 	sf::Vector2u windowSize;
 	std::cout << "Enter resolution: (eg. 1920 1080)" << std::endl;
 	std::cin >> windowSize.x >> windowSize.y;
-	mWindow.create(sf::VideoMode(windowSize.x, windowSize.y), "Breakout", sf::Style::Close);
+	mWindow.create(sf::VideoMode(windowSize.x, windowSize.y), "Breakout", sf::Style::Fullscreen);
 	mWindow.setVerticalSyncEnabled(false);
 }
 

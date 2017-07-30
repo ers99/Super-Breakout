@@ -4,7 +4,7 @@
 
 TextSpawner::TextSpawner()
 {
-	mFont.loadFromFile("arial.ttf");
+	mFont.loadFromFile("Fonts/mouse.otf");
 }
 
 

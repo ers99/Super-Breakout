@@ -25,7 +25,7 @@ void WinState::Draw()
 void WinState::OnCreate()
 {
 	sf::Vector2u size = mGame->GetWindow()->GetSize();
-	mFont.loadFromFile("arial.ttf");
+	mFont.loadFromFile("Fonts/mouse.otf");
 	mText.setFont(mFont);
 	mText.setString("    You Win!\n  Press enter \n for next level");
 	mText.setCharacterSize(size.x/10);
