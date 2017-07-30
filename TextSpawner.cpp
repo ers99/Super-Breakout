@@ -37,7 +37,25 @@ void TextSpawner::Draw(Window* window)
 
 void TextSpawner::Update(const sf::Time time)
 {
-	for(auto itr = mTexts.end() - 1; itr != mTexts.begin() - 1; --itr)
+	if(mTexts.empty())
+	{
+		return;
+	}
+
+	auto itr = mTexts.begin();
+	while(itr != mTexts.end())
+	{
+		if (itr->first < 0)
+		{
+			itr = mTexts.erase(itr);
+		}
+		else
+		{
+			++itr;
+		}
+	}
+
+	for(auto itr = mTexts.begin(); itr != mTexts.end(); ++itr)
 	{
 		if(itr->first > 0)
 		{
@@ -47,10 +65,6 @@ void TextSpawner::Update(const sf::Time time)
 			textColor.a -= 3;
 			itr->second->setFillColor(textColor);
 			itr->first--;
-		}
-		else
-		{
-			mTexts.erase(itr);
 		}
 	}
 }

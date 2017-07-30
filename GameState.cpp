@@ -98,7 +98,6 @@ void GameState::Update(const sf::Time &time)
 		{
 			//Use distance between middle of ball and middle of paddle to determine ball direction
 			sf::Vector2f distance = mBall.GetPosition() - mPlayerPaddle.GetPosition();
-			std::cout << "Distance: " << distance.x << " : " << distance.y << std::endl;
 			newVelocity = distance;
 		}
 		if (playerBounds.contains(ballLeft))
@@ -197,10 +196,6 @@ void GameState::Update(const sf::Time &time)
 	newVelocity.x /= magnitude;
 	newVelocity.y /= magnitude;
 	newVelocity *= mBall.GetMagnitude();
-	std::cout << newVelocity.x << " : " << newVelocity.y << std::endl;
-	//newVelocity.x *= windowSize.x / 500.0f;
-	//newVelocity.y *= windowSize.y / 500.0f;
-	//std::cout << newVelocity.x << " : " << newVelocity.y << std::endl;
 	//Finally update the balls position if active
 	mBall.SetVelocity(newVelocity);
 

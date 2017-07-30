@@ -2,6 +2,8 @@
 #include "Observer.h"
 #include <memory>
 
+using TextPair = std::pair<int, std::unique_ptr<sf::Text>>;
+
 class TextSpawner :
 	public Observer
 {
@@ -20,6 +22,6 @@ private:
 	void Clear();
 
 	sf::Font mFont;
-	std::vector<std::pair<int, std::unique_ptr<sf::Text>>> mTexts;
+	std::vector<TextPair> mTexts;
 };
 
