@@ -36,8 +36,8 @@ void Game::PushState(std::unique_ptr<BaseState> state)
 {
 	
 	mStates.push(std::move(state));
-	mStates.top()->OnCreate();
 	mStates.top()->RegisterObserver(&mAudioPlayer);
+	mStates.top()->OnCreate();	
 	mStates.top()->RegisterObserver(&mTextSpawner);
 }
 
