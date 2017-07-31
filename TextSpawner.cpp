@@ -21,7 +21,7 @@ void TextSpawner::OnNotify(const EventType& eventType, Entity* entity)
 
 	if(eventType == EventType::BrickBreak && entity != nullptr)
 	{
-		SpawnText(sf::Vector2f(entity->GetPosition().x + entity->GetBounds().width / 2, entity->GetPosition().y + entity->GetBounds().height / 2), "100", 85);
+		SpawnText(sf::Vector2f(entity->GetPosition().x + entity->GetBounds().width / 2, entity->GetPosition().y + entity->GetBounds().height / 2), std::to_string(entity->GetScoreValue()), 85);
 	}
 
 	

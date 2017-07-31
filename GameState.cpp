@@ -356,20 +356,22 @@ bool GameState::LoadLevel(const std::string &path)
 			std::cerr << "Level could not be opened" << std::endl;
 			return false;
 		}
-		int currentBlock = 0;
+		int debugCounter = 0;
 		while (!inLevel.eof())
 		{
+			std::cout << debugCounter++ << std::endl;
 			std::string currentLine;
 			std::getline(inLevel, currentLine);
 			std::stringstream linestream(currentLine);
 			std::string red, green, blue, alpha, x, y;
 			linestream >> red >> green >> blue >> alpha >> x >> y;
 			std::unique_ptr<Brick> brick = std::make_unique<Brick>();
-			sf::Vector2f blockSize = { mBlockSize.x * mGame->GetWindow()->GetSize().x, mBlockSize.y * mGame->GetWindow()->GetSize().y };
 			brick->SetSize(mBlockSize - mBlockPadding);
 			brick->SetColor(sf::Color(std::stoi(red), std::stoi(green), std::stoi(blue)));
 			brick->SetPosition(sf::Vector2f(std::stoi(x) * mBlockSize.x, std::stoi(y) * mBlockSize.y));
+			brick->SetScoreValue(100);
 			mLevel.push_back(std::move(brick));
+			
 		}
 		inLevel.close();
 		return true;

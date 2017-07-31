@@ -2,7 +2,7 @@
 
 
 
-Brick::Brick(): mIsActive(true)
+Brick::Brick()
 {
 
 }
@@ -40,14 +40,4 @@ const sf::FloatRect& Brick::GetBounds() const
 const sf::Vector2f& Brick::GetPosition() const
 {
 	return mShape.getPosition();
-}
-
-void Brick::SetActive(const bool &active)
-{
-	mIsActive = active;
-}
-
-const bool& Brick::IsActive() const
-{
-	return mIsActive;
 }

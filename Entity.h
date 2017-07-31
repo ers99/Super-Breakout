@@ -32,6 +32,10 @@ public:
 
 	void SetActive(bool active);
 
+	void SetScoreValue(int value);
+
+	int GetScoreValue();
+
 	Entity();
 	virtual ~Entity();
 
@@ -43,5 +47,6 @@ protected:
 
 	bool mIsActive;
 	bool mIsMoving;
+	int mScoreValue;
 };
 

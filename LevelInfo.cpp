@@ -32,7 +32,7 @@ void LevelInfo::OnCreate(Window* window)
 
 void LevelInfo::IncreaseScore(int amount)
 {
-	mScore += amount * mMultiplier;
+	mScore += amount;
 	UpdateText();
 }
 
@@ -53,7 +53,8 @@ void LevelInfo::OnNotify(const EventType& eventType, Entity* entity)
 	{
 	case EventType::BrickBreak:
 		{
-			IncreaseScore(100);
+			entity->SetScoreValue(entity->GetScoreValue() * mMultiplier);
+			IncreaseScore(entity->GetScoreValue());
 			IncreaseMultiplier(0.5f);
 			break;
 		}

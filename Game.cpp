@@ -34,10 +34,11 @@ Window *Game::GetWindow()
 
 void Game::PushState(std::unique_ptr<BaseState> state)
 {
-	state->RegisterObserver(&mAudioPlayer);
-	state->RegisterObserver(&mTextSpawner);
+	
 	mStates.push(std::move(state));
 	mStates.top()->OnCreate();
+	mStates.top()->RegisterObserver(&mAudioPlayer);
+	mStates.top()->RegisterObserver(&mTextSpawner);
 }
 
 void Game::PopState()

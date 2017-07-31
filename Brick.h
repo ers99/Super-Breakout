@@ -20,15 +20,11 @@ public:
 	
 	const sf::Vector2f &GetPosition() const override;
 
-	void SetActive(const bool&);
-
-	const bool &IsActive() const;
 
 private:
 
 	sf::Vector2f mVelocity;
 
 	sf::RectangleShape mShape;
-	bool mIsActive;
 };
 

@@ -41,7 +41,17 @@ void Entity::SetActive(bool active)
 	mIsActive = active;
 }
 
-Entity::Entity()
+void Entity::SetScoreValue(int value)
+{
+	mScoreValue = value;
+}
+
+int Entity::GetScoreValue()
+{
+	return mScoreValue;
+}
+
+Entity::Entity(): mIsActive(true)
 {
 
 }
