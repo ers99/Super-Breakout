@@ -1,1 +1,1 @@
-A breakout game made in SFML
+# A breakout game made in SFML
