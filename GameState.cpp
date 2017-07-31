@@ -93,7 +93,7 @@ void GameState::Update(const sf::Time &time)
 	auto ballBounds = mBall.GetBounds();
 	if (playerBounds.intersects(ballBounds))
 	{
-		Notify(EventType::Bounce, &mBall);
+		Notify(EventType::Bounce, &mPlayerPaddle);
 		if(playerBounds.contains(ballDown))
 		{
 			//Use distance between middle of ball and middle of paddle to determine ball direction
@@ -146,11 +146,6 @@ void GameState::Update(const sf::Time &time)
 					}
 					(*itr)->SetActive(false);
 
-					int score;
-					std::istringstream buffer(mText.getString());
-					buffer >> score;
-					mText.setString(std::to_string(score + 100));
-
 					break;
 				}
 				else if(brickBounds.contains(topLeft) || brickBounds.contains(topRight) || brickBounds.contains(bottomLeft) || brickBounds.contains(bottomRight))
@@ -179,12 +174,6 @@ void GameState::Update(const sf::Time &time)
 					}
 					(*itr)->SetActive(false);
 
-					int score;
-					std::istringstream buffer(mText.getString());
-					buffer >> score;
-					mText.setString(std::to_string(score + 100));
-
-					break;
 					break;
 				}
 		}
@@ -236,14 +225,14 @@ void GameState::Update(const sf::Time &time)
 	{
 		Notify(EventType::Win, nullptr);
 		mGame->SetLevel(mGame->GetCurrentLevel() + 1);
-		mGame->SwitchState(std::make_unique<WinState>(mGame));
+		mGame->SwitchState(std::make_unique<WinState>(mGame, mLevelInfo.GetScore()));
 		
 	}
 }
 
 void GameState::Draw()
 {
-	
+	Window* window = mGame->GetWindow();
 	if(mLevel.empty())
 	{
 		return;
@@ -252,13 +241,13 @@ void GameState::Draw()
 	{
 		if((*itr).IsActive())
 		{
-			itr->Draw(mGame->GetWindow());
+			itr->Draw(window);
 		}
 		
 	}
-	mPlayerPaddle.Draw(mGame->GetWindow());
-	mBall.Draw(mGame->GetWindow());
-	mGame->GetWindow()->Draw(mText);
+	mPlayerPaddle.Draw(window);
+	mBall.Draw(window);
+	mLevelInfo.Draw(window);
 }
 
 void GameState::OnCreate()
@@ -276,14 +265,9 @@ void GameState::OnCreate()
 	mBall.SetPosition(sf::Vector2f(winSize.x / 2.0f, winSize.y - mPlayerPaddle.GetSize().y - mBall.GetRadius()));
 	mBall.SetActive(false);
 	mBall.SetMagnitude(1);
-	mBall.SetVelocity(sf::Vector2f(0, -mBall.GetMagnitude() * winSize.y));
-	mFont.loadFromFile("Fonts/mouse.otf");
-	mText.setFont(mFont);
-	mText.setCharacterSize(winSize.x / 20.0f);
-	mText.setString("000");
-	sf::FloatRect textRect = mText.getLocalBounds();
-	mText.setOrigin(textRect.left + textRect.width / 2, textRect.top + textRect.height / 2);
-	mText.setPosition(winSize.x / 2, textRect.height);
+	mBall.SetVelocity(sf::Vector2f(mBall.GetMagnitude(), -mBall.GetMagnitude()));
+	mLevelInfo.OnCreate(mGame->GetWindow());
+	RegisterObserver(&mLevelInfo);
 }
 
 void GameState::OnDestroy()

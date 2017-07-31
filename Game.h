@@ -53,6 +53,7 @@ private:
 
 	//Level Information
 	int mCurrentLevel;
+	std::vector<int> mLevelScores;
 
 	//State stack
 	std::stack<std::unique_ptr<BaseState>> mStates;

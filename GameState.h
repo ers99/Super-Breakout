@@ -7,6 +7,7 @@
 #include "Ball.h"
 #include <memory>
 #include "Game.h"
+#include "LevelInfo.h"
 
 
 class GameState : public BaseState
@@ -35,14 +36,11 @@ private:
 
 	std::vector<std::unique_ptr<Brick>> mLevel;
 	sf::Vector2f mBlockSize, mBlockPadding;
+	LevelInfo mLevelInfo;
 
 	Paddle mPlayerPaddle;
 
 	Ball mBall;
-	sf::Font mFont;
-	sf::Text mText;
-
-
 	bool mIsOver;
 
 };

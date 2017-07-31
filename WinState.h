@@ -4,7 +4,7 @@ class WinState :
 	public BaseState
 {
 public:
-	WinState(Game *game);
+	WinState(Game *game, int score);
 	~WinState();
 
 	void Update(const sf::Time&) override;
@@ -20,5 +20,7 @@ public:
 private:
 	sf::Font mFont;
 	sf::Text mText;
+
+	int mScore;
 };
 

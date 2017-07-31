@@ -1,5 +1,6 @@
 #include "AudioPlayer.h"
 #include <iostream>
+#include "Paddle.h"
 
 AudioPlayer::AudioPlayer()
 {
@@ -12,18 +13,33 @@ AudioPlayer::AudioPlayer()
 
 AudioPlayer::~AudioPlayer()
 {
+
 }
 
-void AudioPlayer::PlaySound(const EventType& soundEffect)
+void AudioPlayer::PlaySound(const EventType& soundEffect, Entity *entity)
 {
+	
 	auto itr = mSoundMap.find(soundEffect);
 	if(itr != mSoundMap.end())
 	{
 		itr->second->play();
+		if(soundEffect == EventType::BrickBreak)
+		{
+				itr->second->setPitch(itr->second->getPitch() + 0.5);
+		}
 	}
 	else
 	{
 		std::cout << "Sound not found" << std::endl;
+	}
+
+	if (dynamic_cast<Paddle*>(entity) != nullptr || soundEffect == EventType::Win || soundEffect == EventType::Lose)
+	{
+		auto itr = mSoundMap.find(EventType::BrickBreak);
+		if (itr != mSoundMap.end())
+		{
+			itr->second->setPitch(1);
+		}
 	}
 }
 
@@ -31,11 +47,11 @@ void AudioPlayer::OnNotify(const EventType& eventType, Entity *entity)
 {
 	if(entity != nullptr)
 	{
-		PlaySound(eventType);
+		PlaySound(eventType, entity);
 	}
 	else
 	{
-		PlaySound(eventType);
+		PlaySound(eventType, nullptr);
 	}
 	
 }

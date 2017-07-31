@@ -13,7 +13,7 @@ public:
 	AudioPlayer();
 	~AudioPlayer();
 
-	void PlaySound(const EventType &soundEffect);
+	void PlaySound(const EventType &soundEffect, Entity *entity);
 
 	void OnNotify(const EventType &eventType, Entity *entity) override;
 

@@ -3,7 +3,7 @@
 #include <memory>
 #include <iostream>
 
-WinState::WinState(Game *game) : BaseState(game)
+WinState::WinState(Game *game, int score) : BaseState(game), mScore(score)
 {
 }
 
@@ -27,8 +27,8 @@ void WinState::OnCreate()
 	sf::Vector2u size = mGame->GetWindow()->GetSize();
 	mFont.loadFromFile("Fonts/mouse.otf");
 	mText.setFont(mFont);
-	mText.setString("    You Win!\n  Press enter \n for next level");
-	mText.setCharacterSize(size.x/10);
+	mText.setString("    You Win!\n  Score: " + std::to_string(mScore) + "\n   Press enter \n for next level");
+	mText.setCharacterSize(size.x/15);
 
 	sf::FloatRect textRect = mText.getLocalBounds();
 	mText.setOrigin(textRect.left + textRect.width / 2, textRect.top + textRect.height / 2);
